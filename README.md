@@ -9,8 +9,11 @@
 
 
 ### Team Members
-- Member 1: SREELAYA - KANNUR UNIVERSITY
+- Member 1: SREELAYA C - KANNUR UNIVERSITY
 - Member 2: CHAITHANYA K I - KANNUR UNIVERSITY
+- 
+  CLICK HERE TO VIST OUR SITE
+https://sreelaya941.github.io/SC-BLOCK/
 
 ### Project Description
 IT IS A USELESS PROJECT MAKE IT FOR FUN
