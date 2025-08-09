@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Majestic Nothingness - Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle, #0f0c29, #302b63, #24243e);
+      overflow: hidden;
+      color: white;
+    }
+
+    .screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .active {
+      display: flex;
+    }
+
+    h1 {
+      font-size: 48px;
+      text-shadow: 0 0 20px cyan;
+      margin-bottom: 20px;
+    }
+
+    .start-btn {
+      padding: 20px 40px;
+      border: 2px solid white;
+      border-radius: 50px;
+      background: transparent;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      letter-spacing: 3px;
+      box-shadow: 0 0 15px cyan;
+      transition: all 0.4s ease;
+    }
+
+    .start-btn:hover {
+      box-shadow: 0 0 25px magenta;
+      border-color: magenta;
+      transform: scale(1.05);
+    }
+
+    .quote {
+      margin-top: 40px;
+      font-size: 20px;
+      font-style: italic;
+      color: #ccc;
+    }
+
+    canvas {
+      display: block;
+      background: black;
+      border: 3px solid cyan;
+      box-shadow: 0 0 20px cyan;
+      margin: 0 auto;
+    }
+
+    .score {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 10px;
+    }
+
+    .instructions {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 5px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="screen active">
+    <div>
+      <h1>✨ The Majestic Nothingness ✨</h1>
+      <button class="start-btn" onclick="startGame()">Begin the Experience</button>
+      <div class="quote">“Sometimes, the most powerful thing... is nothing at all.”</div>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameScreen" class="screen">
+    <div>
+      <h1>🌌 Void Jumper 🌌</h1>
+      <div class="score">Score: <span id="score">0</span></div>
+      <div class="instructions">Use ⬅️ ➡️ or A / D to move</div>
+      <canvas id="gameCanvas" width="400" height="600"></canvas>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen" class="screen">
+    <div>
+      <h1>💀 Game Over 💀</h1>
+      <div class="score">Your Score: <span id="finalScore">0</span></div>
+      <button class="start-btn" onclick="restartGame()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const finalScoreEl = document.getElementById('finalScore');
+
+    let canvas, ctx, player, obstacles, score, keys, frameCount, obstacleInterval;
+
+    function startGame() {
+      welcomeScreen.classList.remove('active');
+      gameScreen.classList.add('active');
+      initGame();
+    }
+
+    function initGame() {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+
+      player = {
+        x: 180,
+        y: 550,
+        width: 40,
+        height: 40,
+        color: '#0ff',
+        speed: 5
+      };
+
+      obstacles = [];
+      score = 0;
+      frameCount = 0;
+      keys = {};
+
+      document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+      document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+
+      obstacleInterval = setInterval(spawnObstacle, 1000);
+      requestAnimationFrame(gameLoop);
+    }
+
+    function drawPlayer() {
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = '#f00';
+      for (let obs of obstacles) {
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      }
+    }
+
+    function updateObstacles() {
+      for (let obs of obstacles) {
+        obs.y += obs.speed;
+      }
+
+      obstacles = obstacles.filter(obs => obs.y < canvas.height);
+    }
+
+    function spawnObstacle() {
+      const width = 40;
+      const x = Math.random() * (canvas.width - width);
+      obstacles.push({
+        x,
+        y: -40,
+        width,
+        height: 40,
+        speed: 3 + Math.random() * 2
+      });
+    }
+
+    function detectCollision() {
+      for (let obs of obstacles) {
+        if (
+          player.x < obs.x + obs.width &&
+          player.x + player.width > obs.x &&
+          player.y < obs.y + obs.height &&
+          player.y + player.height > obs.y
+        ) {
+          gameOver();
+        }
+      }
+    }
+
+    function updateScore() {
+      score++;
+      document.getElementById('score').innerText = score;
+    }
+
+    function updatePlayerPosition() {
+      if (keys['arrowleft'] || keys['a']) {
+        player.x -= player.speed;
+      }
+      if (keys['arrowright'] || keys['d']) {
+        player.x += player.speed;
+      }
+
+      player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+      drawObstacles();
+      updateObstacles();
+      updatePlayerPosition();
+      detectCollision();
+
+      frameCount++;
+      if (frameCount % 30 === 0) {
+        updateScore();
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameOver() {
+      clearInterval(obstacleInterval);
+      gameScreen.classList.remove('active');
+      gameOverScreen.classList.add('active');
+      finalScoreEl.innerText = score;
+    }
+
+    function restartGame() {
+      gameOverScreen.classList.remove('active');
+      gameScreen.classList.add('active');
+
+      player.x = 180;
+      player.y = 550;
+      obstacles = [];
+      score = 0;
+      frameCount = 0;
+      document.getElementById('score').innerText = score;
+
+      obstacleInterval = setInterval(spawnObstacle, 1000);
+      requestAnimationFrame(gameLoop);
+    }
+  </script>
+
+</body>
+</html>

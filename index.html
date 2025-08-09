@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Most Useless Website</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        font-family: 'Comic Sans MS', cursive;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: linear-gradient(270deg, #ff00cc, #3333ff, #00ff99);
+        background-size: 600% 600%;
+        animation: bgMove 10s infinite alternate;
+        color: white;
+        text-align: center;
+    }
+    @keyframes bgMove {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+    h1 {
+        font-size: 3rem;
+        animation: blink 1s linear infinite;
+    }
+    @keyframes blink {
+        0%, 49%{opacity:1;}
+        50%, 100%{opacity:0;}
+    }
+    button {
+        margin-top: 20px;
+        padding: 20px 40px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 50px;
+        background: yellow;
+        color: black;
+        cursor: pointer;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+</style>
+</head>
+<body>
+    <h1>🌟 Welcome to Uselessness 🌟</h1>
+    <p>Absolutely nothing important happens here.</p>
+    <a href="game.html"><button>Click Me!</button></a>
+</body>
+</html>
